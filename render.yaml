@@ -25,13 +25,13 @@ services:
       - key: SUPABASE_SECRET_KEY
         sync: false
       - key: SUPABASE_DB_HOST
-        sync: false
+        value: aws-0-eu-west-1.pooler.supabase.com
       - key: SUPABASE_DB_PORT
         value: "5432"
       - key: SUPABASE_DB_NAME
         value: postgres
       - key: SUPABASE_DB_USER
-        value: lms_backend
+        value: lms_backend.gjaxtbmqawjkvuzmywdv
       - key: SUPABASE_DB_PASSWORD
         sync: false
       - key: UNIVERSITY_ID

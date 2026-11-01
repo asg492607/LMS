@@ -36,7 +36,7 @@ Run `npm run env:check` to validate the local files without displaying credentia
 
 The root `render.yaml` is a Render Blueprint for the Express API. In Render, create a Blueprint from this GitHub repository and the `main` branch. It uses `npm ci --omit=dev`, starts with `npm run server`, binds to Render's `PORT` on `0.0.0.0`, and checks `/healthz` for API configuration and Postgres connectivity. The Blueprint keeps environment-specific credentials out of Git by prompting for variables marked `sync: false`.
 
-Set `CORS_ORIGINS` to the exact origin of the deployed frontend (for local testing, include `http://localhost:5173`). Supply `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `SUPABASE_DB_HOST`, and `SUPABASE_DB_PASSWORD` from the Supabase project. Keep the secret key and database password in Render's environment settings only. Choose a Render region close to the Supabase database. The free web service may sleep when idle, so its first request after a quiet period can take longer.
+Set `CORS_ORIGINS` to the exact origin of the deployed frontend (for local testing, include `http://localhost:5173`). Render uses IPv4, so connect to Supabase with its shared pooler in session mode on port `5432`, not the direct database endpoint. Copy the pooler host from Supabase's Connect panel and use the `lms_backend.<project-ref>` username format. Supply `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, the pooler host and username, and `SUPABASE_DB_PASSWORD` from the Supabase project. Keep the secret key and database password in Render's environment settings only. The free web service may sleep when idle, so its first request after a quiet period can take longer.
 
 ## Security boundaries and current limits
 
