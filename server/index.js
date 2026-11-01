@@ -3,13 +3,13 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { rateLimit } from 'express-rate-limit';
-import { adminAuth, adminDb } from './supabaseDb.js';
+import { adminAuth, adminDb, dbPool } from './supabaseDb.js';
 import { supabaseAdminAuthConfigured, supabaseAuth } from './supabaseAuth.js';
 import { requireAuthenticated, requirePasswordChanged, requirePlatformAdmin } from './auth.js';
 import adminRoutes from './adminRoutes.js';
 import portalRoutes from './portalRoutes.js';
 
-const port = Number(process.env.API_PORT || 4000);
+const port = Number(process.env.PORT || process.env.API_PORT || 4000);
 const allowedOrigins = new Set(
   (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
     .split(',')
@@ -31,6 +31,18 @@ app.use(cors({
   maxAge: 600,
 }));
 app.use(express.json({ limit: '2mb', strict: true }));
+app.get('/healthz', async (_request, response) => {
+  if (!dbPool || !supabaseAuth || !supabaseAdminAuthConfigured) {
+    return response.status(503).type('text/plain').send('not ready');
+  }
+  try {
+    await dbPool.query('select 1');
+    return response.status(200).type('text/plain').send('ok');
+  } catch (error) {
+    console.error('Readiness check failed:', error?.code || error?.name || 'unknown-error');
+    return response.status(503).type('text/plain').send('not ready');
+  }
+});
 app.use('/api', rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 120,

@@ -32,6 +32,12 @@ Keep the browser and API settings in separate files. Copy `.env.example` to igno
 
 Run `npm run env:check` to validate the local files without displaying credentials. Install dependencies with `npm install`. Start the API with `npm run server` and the Vite app with `npm run dev`.
 
+## Deploy the API to Render
+
+The root `render.yaml` is a Render Blueprint for the Express API. In Render, create a Blueprint from this GitHub repository and the `main` branch. It uses `npm ci --omit=dev`, starts with `npm run server`, binds to Render's `PORT` on `0.0.0.0`, and checks `/healthz` for API configuration and Postgres connectivity. The Blueprint keeps environment-specific credentials out of Git by prompting for variables marked `sync: false`.
+
+Set `CORS_ORIGINS` to the exact origin of the deployed frontend (for local testing, include `http://localhost:5173`). Supply `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `SUPABASE_DB_HOST`, and `SUPABASE_DB_PASSWORD` from the Supabase project. Keep the secret key and database password in Render's environment settings only. Choose a Render region close to the Supabase database. The free web service may sleep when idle, so its first request after a quiet period can take longer.
+
 ## Security boundaries and current limits
 
 - The publishable key is public by design; authorization is enforced by verified Supabase sessions, the API, and Postgres grants.

@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: mit-adt-lms-api
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm ci --omit=dev
+    startCommand: npm run server
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: TRUST_PROXY
+        value: "1"
+      - key: API_PORT
+        value: "4000"
+      - key: CORS_ORIGINS
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SUPABASE_DB_HOST
+        sync: false
+      - key: SUPABASE_DB_PORT
+        value: "5432"
+      - key: SUPABASE_DB_NAME
+        value: postgres
+      - key: SUPABASE_DB_USER
+        value: lms_backend
+      - key: SUPABASE_DB_PASSWORD
+        sync: false
+      - key: UNIVERSITY_ID
+        value: mit-adt
+      - key: UNIVERSITY_NAME
+        value: MIT ADT University
