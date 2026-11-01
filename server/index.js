@@ -10,12 +10,10 @@ import adminRoutes from './adminRoutes.js';
 import portalRoutes from './portalRoutes.js';
 
 const port = Number(process.env.PORT || process.env.API_PORT || 4000);
-const allowedOrigins = new Set(
-  (process.env.CORS_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean),
-);
+const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+if (process.env.NODE_ENV === 'production') defaultOrigins.push('https://mitadtlms.netlify.app');
+const configuredOrigins = (process.env.CORS_ORIGINS || '').split(',').map((origin) => origin.trim()).filter(Boolean);
+const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
 
 const app = express();
 app.disable('x-powered-by');
@@ -73,12 +71,7 @@ function isStrongPassword(password) {
 app.get('/api/health', (_request, response) => {
   const authenticationConfigured = Boolean(supabaseAuth);
   const databaseConfigured = Boolean(adminDb);
-  response.json({
-    status: authenticationConfigured && databaseConfigured && supabaseAdminAuthConfigured ? 'ok' : 'degraded',
-    authenticationConfigured,
-    databaseConfigured,
-    accountProvisioningConfigured: supabaseAdminAuthConfigured,
-  });
+  response.json({ status: authenticationConfigured && databaseConfigured && supabaseAdminAuthConfigured ? 'ok' : 'degraded' });
 });
 
 app.post('/api/auth/change-initial-password', requireAuthenticated, async (request, response) => {
