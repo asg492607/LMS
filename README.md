@@ -38,6 +38,12 @@ The root `render.yaml` is a Render Blueprint for the Express API. In Render, cre
 
 Set `CORS_ORIGINS` to the exact origin of the deployed frontend (for local testing, include `http://localhost:5173`). Render uses IPv4, so connect to Supabase with its shared pooler in session mode on port `5432`, not the direct database endpoint. Copy the pooler host from Supabase's Connect panel and use the `lms_backend.<project-ref>` username format. Supply `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, the pooler host and username, and `SUPABASE_DB_PASSWORD` from the Supabase project. Keep the secret key and database password in Render's environment settings only. The free web service may sleep when idle, so its first request after a quiet period can take longer.
 
+## Deploy the frontend to Netlify
+
+Connect the `main` branch of this repository to Netlify. The root `netlify.toml` sets the build command (`npm ci && npm run build`), publishes `dist`, and configures the Render API and Supabase public client settings. These values are included in the browser bundle by design; never add a Supabase secret key, database password, or other backend credential to Netlify's `VITE_*` variables.
+
+After Netlify assigns the site URL, add that exact origin (for example, `https://your-site.netlify.app`) to the Render service's comma-separated `CORS_ORIGINS` environment variable. Keep `http://localhost:5173` there for local Vite development if needed, then redeploy the Render service so browsers can call the API from the Netlify site.
+
 ## Security boundaries and current limits
 
 - The publishable key is public by design; authorization is enforced by verified Supabase sessions, the API, and Postgres grants.

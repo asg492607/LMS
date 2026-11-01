@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from './supabase.js';
 import { getAccessToken } from './apiAuth.js';
+import { apiUrl } from './apiBase.js';
 import './admin.css';
 
 const roleOptions = [
@@ -171,7 +172,7 @@ export default function AdminDashboard({ user, onBack }) {
 
   async function apiRequest(path, options = {}) {
     const token = await getAccessToken();
-    const response = await fetch(path, {
+    const response = await fetch(apiUrl(path), {
       ...options,
       headers: {
         Authorization: `Bearer ${token}`,

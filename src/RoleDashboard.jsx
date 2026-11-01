@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from './supabase.js';
 import { getAccessToken } from './apiAuth.js';
+import { apiUrl } from './apiBase.js';
 import './portal.css';
 
 const roleInfo = {
@@ -204,7 +205,7 @@ function ContentCard({ item, studentSubmission, staffSubmissionCount, isStudent,
 
 async function portalRequest(user, path, options = {}) {
   const token = await getAccessToken();
-  const response = await fetch(path, {
+  const response = await fetch(apiUrl(path), {
     ...options,
     headers: {
       Authorization: `Bearer ${token}`,

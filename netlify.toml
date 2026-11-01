@@ -1,0 +1,9 @@
+[build]
+command = "npm ci && npm run build"
+publish = "dist"
+
+[build.environment]
+NODE_VERSION = "22.12.0"
+VITE_API_BASE_URL = "https://mit-adt-lms-api.onrender.com"
+VITE_SUPABASE_URL = "https://gjaxtbmqawjkvuzmywdv.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_94YIc8sm-JlhItpOV08QMA_2woagVvD"

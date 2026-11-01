@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from './supabase.js';
 import { getAccessToken } from './apiAuth.js';
+import { apiUrl } from './apiBase.js';
 
 function getFriendlyError(error) {
   const messages = {
@@ -54,7 +55,7 @@ export default function AuthDialog({ user, isPlatformAdmin, roleAssignments, onA
     (async () => {
       try {
         const token = await getAccessToken();
-        const response = await fetch('/api/me', {
+        const response = await fetch(apiUrl('/api/me'), {
           headers: { Authorization: `Bearer ${token}` },
         });
         const result = await response.json().catch(() => ({}));
@@ -155,7 +156,7 @@ export default function AuthDialog({ user, isPlatformAdmin, roleAssignments, onA
     setFeedback('');
     try {
       const token = await getAccessToken();
-      const response = await fetch('/api/auth/change-initial-password', {
+      const response = await fetch(apiUrl('/api/auth/change-initial-password'), {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: newPassword }),
